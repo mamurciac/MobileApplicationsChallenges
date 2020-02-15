@@ -12,9 +12,10 @@ public class TicTacToeActivity extends AppCompatActivity{
     //The buttons make up the board
     private Button boardButtons[];
     //Text displayed as game's information (Turn and winner's game)
-    private TextView infoGame;
+    private TextView infoGame, infoNumberHumanWins, infoNumberAndroidWins, infoNumberTies;
 
-    private int numberGame = 1;
+    //This variables allow to control the game's statistics (Number of games and wins per player)
+    private int numberGame = 1, numberHumanWins = 0, numberAndroidWins = 0, numberTies = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -32,6 +33,9 @@ public class TicTacToeActivity extends AppCompatActivity{
         boardButtons[7] = findViewById(R.id.spot_eight);
         boardButtons[8] = findViewById(R.id.spot_nine);
         infoGame = findViewById(R.id.game_information);
+        infoNumberHumanWins = findViewById(R.id.number_human_wins);
+        infoNumberAndroidWins = findViewById(R.id.number_android_wins);
+        infoNumberTies = findViewById(R.id.number_ties);
         ticTacToeGame = new TicTacToeGame();
         startNewGame();
     }
@@ -58,6 +62,9 @@ public class TicTacToeActivity extends AppCompatActivity{
             boardButtons[move].setTextColor(Color.rgb(200, 0, 0));
             infoGame.setText(R.string.turn_human);
         }
+        infoNumberHumanWins.setText("Human Wins: " + numberHumanWins);
+        infoNumberAndroidWins.setText("Android Wins: " + numberAndroidWins);
+        infoNumberTies.setText("Ties: " + numberTies);
     }
 
     private void setMove(char player, int location){
@@ -112,16 +119,22 @@ public class TicTacToeActivity extends AppCompatActivity{
                     for(int spot = 0; spot < boardButtons.length; spot++){
                         boardButtons[spot].setEnabled(false);
                     }
+                    numberTies++;
+                    infoNumberTies.setText("Ties: " + numberTies);
                 }else if(winner == TicTacToeGame.gameWithHumanWinner){
                     infoGame.setText(R.string.result_human_wins);
                     for(int spot = 0; spot < boardButtons.length; spot++){
                         boardButtons[spot].setEnabled(false);
                     }
+                    numberHumanWins++;
+                    infoNumberHumanWins.setText("Human Wins: " + numberHumanWins);
                 }else{
                     infoGame.setText(R.string.result_computer_wins);
                     for(int spot = 0; spot < boardButtons.length; spot++){
                         boardButtons[spot].setEnabled(false);
                     }
+                    numberAndroidWins++;
+                    infoNumberAndroidWins.setText("Android Wins: " + numberAndroidWins);
                 }
             }
         }
