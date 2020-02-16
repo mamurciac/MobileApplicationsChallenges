@@ -15,6 +15,8 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
     private BoardView gameBoardView;
     private MediaPlayer humanGambleMediaPlayer, computerGambleMediaPlayer;
 
+    private SharedPreferences preferences;
+
     //Text displayed as game's information (Turn and winner's game)
     private TextView infoGame, infoNumberHumanWins, infoNumberAndroidWins, infoNumberTies;
 
@@ -30,6 +32,13 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+        //It restores the scores
+        preferences = getSharedPreferences("tictactoe_preferences", MODE_PRIVATE);
+        numberHumanWins = preferences.getInt("numberHumanWins", 0);
+        numberAndroidWins = preferences.getInt("numberAndroidWins", 0);
+        numberTies = preferences.getInt("numberTies", 0);
+
         setContentView(R.layout.activity_tic_tac_toe);
         humanGambleMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.x_sound);
         computerGambleMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.o_sound);
@@ -139,6 +148,17 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
         super.onPause();
         humanGambleMediaPlayer.release();
         computerGambleMediaPlayer.release();
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        //It saves the current scores
+        SharedPreferences.Editor editorPreferences = preferences.edit();
+        editorPreferences.putInt("numberHumanWins", numberHumanWins);
+        editorPreferences.putInt("numberAndroidWins", numberAndroidWins);
+        editorPreferences.putInt("numberTies", numberTies);
+        editorPreferences.commit();
     }
 
     @Override
