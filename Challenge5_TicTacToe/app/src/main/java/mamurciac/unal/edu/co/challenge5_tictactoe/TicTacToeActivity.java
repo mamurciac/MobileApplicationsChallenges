@@ -26,7 +26,7 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
     private boolean gameOver;
 
     //Menu options
-    static final int dialogDifficultySuccessId = 0, dialogDifficultyFailureId = 1, dialogAboutGameId = 2, dialogQuitId = 3;
+    static final int dialogDifficultySuccessId = 0, dialogDifficultyFailureId = 1, dialogRestoreScoreId = 2, dialogAboutGameId = 3, dialogQuitId = 4;
     private static String popupConstant = "mPopup", popupForceShowIcon = "setForceShowIcon";
 
     @Override
@@ -62,7 +62,7 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
             ticTacToeGame.setBoardState(savedInstanceState.getCharArray("boardGame"));
             gameOver = savedInstanceState.getBoolean("gameOver");
             infoGame.setText(savedInstanceState.getCharSequence("infoGame"));
-            numberHumanWins = savedInstanceState.getInt("numberAumanWins");
+            numberHumanWins = savedInstanceState.getInt("numberHumanWins");
             numberAndroidWins = savedInstanceState.getInt("numberAndroidWins");
             numberTies = savedInstanceState.getInt("numberTies");
             playerTurn = savedInstanceState.getChar("playerTurn");
@@ -189,6 +189,23 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
                 builder.setMessage(R.string.difficulty_not_changeable).setCancelable(true).setPositiveButton(R.string.ok,null);
                 dialog = builder.create();
                 break;
+            case dialogRestoreScoreId:
+                builder.setMessage(R.string.restore_score_question).setCancelable(false).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int id){
+                        //It saves the new initial scores
+                        numberHumanWins = 0;
+                        numberAndroidWins = 0;
+                        numberTies = 0;
+                        SharedPreferences.Editor editorPreferences = preferences.edit();
+                        editorPreferences.putInt("numberHumanWins", numberHumanWins);
+                        editorPreferences.putInt("numberAndroidWins", numberAndroidWins);
+                        editorPreferences.putInt("numberTies", numberTies);
+                        editorPreferences.commit();
+                        displayScores();
+                    }
+                }).setNegativeButton(R.string.no, null);
+                dialog = builder.create();
+                break;
             case dialogAboutGameId:
                 dialog = new Dialog(TicTacToeActivity.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -229,6 +246,9 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
                 }else{
                     showDialog(dialogDifficultyFailureId);
                 }
+                return true;
+            case R.id.restore_score:
+                showDialog(dialogRestoreScoreId);
                 return true;
             case R.id.about:
                 showDialog(dialogAboutGameId);
