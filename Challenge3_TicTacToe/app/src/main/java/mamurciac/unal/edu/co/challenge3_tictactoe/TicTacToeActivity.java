@@ -1,7 +1,7 @@
 package mamurciac.unal.edu.co.challenge3_tictactoe;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.*;
 import android.graphics.Color;
 import androidx.appcompat.app.*;
 import android.os.Bundle;
@@ -20,7 +20,7 @@ public class TicTacToeActivity extends AppCompatActivity{
     private int numberGame = 1, numberHumanWins = 0, numberAndroidWins = 0, numberTies = 0;
 
     //Menu options
-    static final int dialogDifficultyId = 0, dialogQuitId = 1;
+    static final int dialogDifficultyId = 0, dialogAboutGameId = 1, dialogQuitId = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -102,6 +102,9 @@ public class TicTacToeActivity extends AppCompatActivity{
             case R.id.ai_difficulty:
                 showDialog(dialogDifficultyId);
                 return true;
+            case R.id.about:
+                showDialog(dialogAboutGameId);
+                return true;
             case R.id.quit:
                 showDialog(dialogQuitId);
                 return true;
@@ -124,6 +127,15 @@ public class TicTacToeActivity extends AppCompatActivity{
                         Toast.makeText(getApplicationContext(),"Game's Difficulty: " + levels[item], Toast.LENGTH_SHORT).show();
                     }
                 });
+                dialog = builder.create();
+                break;
+            case dialogAboutGameId:
+                builder = new AlertDialog.Builder(this);
+                Context context = getApplicationContext();
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+                View layout = inflater.inflate(R.layout.about_dialog,null);
+                builder.setView(layout);
+                builder.setPositiveButton("OK",null);
                 dialog = builder.create();
                 break;
             case dialogQuitId:
