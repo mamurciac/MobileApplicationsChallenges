@@ -45,7 +45,44 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
         gameBoardView.setGame(ticTacToeGame);
         //It listens for touches on the board
         gameBoardView.setOnTouchListener(touchListener);
-        startNewGame();
+
+        if(savedInstanceState == null){
+            startNewGame();
+        }else{
+            //It restores the game's state
+            ticTacToeGame.setBoardState(savedInstanceState.getCharArray("boardGame"));
+            gameOver = savedInstanceState.getBoolean("gameOver");
+            infoGame.setText(savedInstanceState.getCharSequence("infoGame"));
+            numberHumanWins = savedInstanceState.getInt("numberAumanWins");
+            numberAndroidWins = savedInstanceState.getInt("numberAndroidWins");
+            numberTies = savedInstanceState.getInt("numberTies");
+            playerTurn = savedInstanceState.getChar("playerTurn");
+        }
+        displayScores();
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+        ticTacToeGame.setBoardState(savedInstanceState.getCharArray("boardGame"));
+        gameOver = savedInstanceState.getBoolean("gameOver");
+        infoGame.setText(savedInstanceState.getCharSequence("infoGame"));
+        numberHumanWins = savedInstanceState.getInt("numberHumanWins");
+        numberAndroidWins = savedInstanceState.getInt("numberAndroidWins");
+        numberTies = savedInstanceState.getInt("numberTies");
+        playerTurn = savedInstanceState.getChar("playerTurn");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putCharArray("boardGame", ticTacToeGame.getBoardState());
+        outState.putBoolean("gameOver", gameOver);
+        outState.putInt("numberHumanWins", Integer.valueOf(numberHumanWins));
+        outState.putInt("numberAndroidWins", Integer.valueOf(numberAndroidWins));
+        outState.putInt("numberTies", Integer.valueOf(numberTies));
+        outState.putCharSequence("infoGame", infoGame.getText());
+        outState.putChar("playerTurn", playerTurn);
     }
 
     private void startNewGame(){
@@ -67,6 +104,13 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
         infoNumberHumanWins.setText("Human Wins: " + numberHumanWins);
         infoNumberAndroidWins.setText("Android Wins: " + numberAndroidWins);
         infoNumberTies.setText("Ties: " + numberTies);
+    }
+
+    //It updates the game's scores
+    private void displayScores(){
+        infoNumberHumanWins.setText("Human Wins: " + Integer.toString(numberHumanWins));
+        infoNumberAndroidWins.setText("Android Wins: " + Integer.toString(numberAndroidWins));
+        infoNumberTies.setText("Ties: " + Integer.toString(numberTies));
     }
 
     private boolean setMove(char player, int location){
