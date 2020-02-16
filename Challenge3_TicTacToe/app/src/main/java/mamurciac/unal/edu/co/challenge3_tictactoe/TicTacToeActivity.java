@@ -21,7 +21,7 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
     private int numberGame = 1, numberHumanWins = 0, numberAndroidWins = 0, numberTies = 0;
 
     //Menu options
-    static final int dialogDifficultyId = 0, dialogAboutGameId = 1, dialogQuitId = 2;
+    static final int dialogDifficultySuccessId = 0, dialogDifficultyFailureId = 1, dialogAboutGameId = 2, dialogQuitId = 3;
     private static String popupConstant = "mPopup", popupForceShowIcon = "setForceShowIcon";
 
     @Override
@@ -98,7 +98,7 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
         Dialog dialog = null;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         switch(id){
-            case dialogDifficultyId:
+            case dialogDifficultySuccessId:
                 builder.setTitle(R.string.difficulty_choose);
                 final CharSequence[] levels = {getResources().getString(R.string.difficulty_easy), getResources().getString(R.string.difficulty_medium), getResources().getString(R.string.difficulty_hard)};
                 builder.setSingleChoiceItems(levels, ticTacToeGame.getDifficultyLevel().ordinal(), new DialogInterface.OnClickListener(){
@@ -108,6 +108,10 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
                         Toast.makeText(getApplicationContext(),"Game's Difficulty: " + levels[item], Toast.LENGTH_SHORT).show();
                     }
                 });
+                dialog = builder.create();
+                break;
+            case dialogDifficultyFailureId:
+                builder.setMessage(R.string.difficulty_not_changeable).setCancelable(true).setPositiveButton(R.string.ok,null);
                 dialog = builder.create();
                 break;
             case dialogAboutGameId:
@@ -145,7 +149,11 @@ public class TicTacToeActivity extends AppCompatActivity implements PopupMenu.On
                 startNewGame();
                 return true;
             case R.id.ai_difficulty:
-                showDialog(dialogDifficultyId);
+                if(ticTacToeGame.checkWhetherHumanPlayed() == false){
+                    showDialog(dialogDifficultySuccessId);
+                }else{
+                    showDialog(dialogDifficultyFailureId);
+                }
                 return true;
             case R.id.about:
                 showDialog(dialogAboutGameId);
